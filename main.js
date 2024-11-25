@@ -5,9 +5,9 @@ const notificacionEL = document.getElementById('notificacion');
 const resultadoEl = document.getElementById('resultado');
 
 // Función para mostrar notificaciones
-function mostrarNotificacion(message, tipo = 'success') {
+function mostrarNotificacion(mensaje, tipo = 'success') {
   notificacionEL.className = `alert alert-${tipo} d-block`;
-  notificacionEL.textContent = message;
+  notificacionEL.textContent = mensaje;
 
   setTimeout(() => {
     notificacionEL.className = 'alert d-none';
@@ -19,7 +19,7 @@ async function obtenerDatosAPI(url) {
     const response = await fetch(url);
 
     if (!response.ok) {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      throw new Error('No se pudieron obtener los datos.');
     }
 
     const data = await response.json();
