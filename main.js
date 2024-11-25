@@ -1,20 +1,20 @@
 // Selección de elementos del DOM
-const form = document.getElementById('api-form');
-const apiUrlInput = document.getElementById('api-url');
-const notification = document.getElementById('notification');
-const resultsContent = document.getElementById('results-content');
+const formularioEl = document.getElementById('formulario');
+const inputEl = document.getElementById('api-url');
+const notificacionEL = document.getElementById('notificacion');
+const resultadoEl = document.getElementById('resultado');
 
 // Función para mostrar notificaciones
-function showNotification(message, type = 'success') {
-  notification.className = `alert alert-${type} d-block`;
-  notification.textContent = message;
+function mostrarNotificacion(message, tipo = 'success') {
+  notificacionEL.className = `alert alert-${tipo} d-block`;
+  notificacionEL.textContent = message;
 
   setTimeout(() => {
-    notification.className = 'alert d-none';
+    notificacionEL.className = 'alert d-none';
   }, 5000); // Oculta la notificación después de 5 segundos
 }
 
-async function fetchApiData(url) {
+async function obtenerDatosAPI(url) {
   try {
     const response = await fetch(url);
 
@@ -23,30 +23,30 @@ async function fetchApiData(url) {
     }
 
     const data = await response.json();
-    showNotification('Datos cargados correctamente.', 'success');
-    displayResults(data);
+    mostrarNotificacion('Datos cargados correctamente.', 'success');
+    mostrarResultado(data);
   } catch (error) {
-    showNotification(`Error al cargar los datos: ${error.message}`, 'danger');
-    resultsContent.innerHTML = '<p class="text-danger">No se pudieron obtener los datos.</p>';
+    mostrarNotificacion(`Error al cargar los datos: ${error.message}`, 'danger');
+    resultadoEl.innerHTML = '<p class="text-danger mb-0">No se pudieron obtener los datos.</p>';
   }
 }
 
 // Evento de envío del formulario
-form.addEventListener('submit', (e) => {
+formularioEl.addEventListener('submit', (e) => {
   e.preventDefault(); // Evita la recarga de la página
 
-  const url = apiUrlInput.value.trim();
+  const url = inputEl.value.trim();
 
   // Validar que la URL no esté vacía y sea válida
   if (!url) {
-    showNotification('Por favor, ingresa una URL válida.', 'warning');
+    mostrarNotificacion('Por favor, ingresa una URL válida.', 'warning');
     return;
   }
 
   // Consumir la API
-  fetchApiData(url);
+  obtenerDatosAPI(url);
 });
 
-function displayResults(data) {
-  resultsContent.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+function mostrarResultado(data) {
+  resultadoEl.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
 }
