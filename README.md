@@ -1,36 +1,127 @@
-# tp final de diseño web
+### TP final - diseño web
 
-El proyecto consiste en una página web que permite al usuario ingresar una URL de una API, 
-visualizar los datos de la API y descargarlos en formato JSON.
+# Consumo de API con HTML, JavaScript y Bootstrap
 
-El proyecto está compuesto por un archivo HTML (index.html) y un archivo JavaScript (scripts.js).
+Este proyecto es una aplicación web sencilla que permite consumir datos desde una API externa. Los datos obtenidos se procesan y se muestran dinámicamente en la interfaz utilizando **HTML**, **JavaScript (vanilla)** y estilos proporcionados por **Bootstrap**.
 
-El archivo HTML contiene un formulario con un campo de texto para ingresar la URL de la API,
-un botón para enviar el formulario y un contenedor para mostrar los datos de la API.
+## Estructura del proyecto
 
-El archivo JavaScript contiene la lógica del proyecto, que se explica a continuación:
+```
+/
+├── index.html        # Archivo HTML principal
+├── styles.css        # Hoja de estilos para personalización adicional
+├── script.js         # Lógica principal en JavaScript
+├── logo.png          # Logo del sitio (puedes reemplazarlo por el tuyo)
+└── README.md         # Archivo explicativo del proyecto
+```
 
-1. Se declaran las variables y constantes necesarias para interactuar con los elementos del DOM.
+---
 
-2. Se define un objeto alertConfig que contiene información sobre los iconos y colores de las alertas.
+## Características principales
+1. **Formulario**: 
+   - Permite ingresar una URL para consumir datos de una API.
+   - Valida que el campo no esté vacío antes de procesar.
+2. **Consumo de API**:
+   - Utiliza `fetch` con `async/await` para obtener datos de una API.
+   - Manejo de errores en caso de que la URL sea incorrecta o haya problemas de red.
+3. **Visualización de datos**:
+   - Si la API devuelve un **arreglo de objetos**, los datos se muestran en una tabla.
+   - Si la API devuelve un **objeto**, se muestran como un listado.
+4. **Notificaciones dinámicas**:
+   - Mensajes visuales que informan al usuario sobre el éxito o el fallo de la solicitud.
+5. **Diseño con Bootstrap**:
+   - Uso de clases como `container`, `alert`, `table`, y `btn` para un diseño responsivo y atractivo.
 
-3. Se define una lista de APIs soportadas (apis) que se utilizan para generar una URL aleatoria.
+---
 
-4. Se declaran las funciones necesarias para el funcionamiento del proyecto:
+## ¿Cómo funciona?
 
-    - generarUrl: genera una URL aleatoria basada en la lista de APIs soportadas.
-    - generarLoader: muestra un loader mientras se cargan los datos de la API.
-    - descargarArchivo: descarga un archivo JSON con los datos de la API.
-    - crearAlert: crea una alerta con un mensaje y un tipo determinado.
-    - renderDefault: renderiza los datos por defecto en formato JSON.
-    - renderRickAndMorty: renderiza los datos de la API de Rick and Morty en una tabla.
-    - renderRickAndMortyDetalle: renderiza los datos de un personaje específico de la API de Rick and Morty.
+### 1. Formulario de entrada
+El usuario ingresa la URL de una API en el campo de texto. Por ejemplo:
+```plaintext
+https://jsonplaceholder.typicode.com/posts
+```
+Cuando el usuario presiona el botón **Consultar**, se envía la URL a la función `fetchApiData`.
 
-5. Se añaden los eventos necesarios para el funcionamiento del proyecto:
+---
 
-    - Cuando se envía el formulario, se realiza una petición a la URL ingresada por el usuario,
-      se obtienen los datos de la API y se renderizan en la página.
-    - Cuando se hace click en el botón de descarga, se descargan los datos en formato JSON.
-    - Cuando se hace click en el botón de generar URL, se genera una URL aleatoria de la lista de APIs soportadas.
+### 2. Consumo de la API
+La función `fetchApiData` utiliza el método `fetch` para realizar una solicitud GET a la URL proporcionada.  
+- Si la respuesta es exitosa (`status 200`), los datos se convierten a formato JSON y se procesan para mostrarlos en la página.
+- Si ocurre algún error (por ejemplo, un 404 o la URL es inválida), se muestra un mensaje de error con una clase `alert-danger`.
 
-El proyecto permite al usuario interactuar con una API, visualizar los datos de la API y descargarlos en formato JSON.
+Ejemplo de código:
+```javascript
+async function fetchApiData(url) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+    const data = await response.json();
+    displayResults(data); // Procesa y muestra los datos
+  } catch (error) {
+    showNotification(`Error: ${error.message}`, 'danger');
+  }
+}
+```
+
+---
+
+### 3. Visualización de resultados
+Los datos obtenidos se procesan de dos maneras:
+- **Tabla**: Si los datos son un arreglo de objetos, se generan encabezados basados en las claves del primer objeto y se llenan las filas con los valores.
+- **Listado**: Si los datos son un objeto simple, se crea una lista con sus claves y valores.
+
+Ejemplo de tabla generada:
+```html
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Título</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Ejemplo</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+---
+
+## Clases de Bootstrap usadas
+### Diseño y estructura:
+- **`container`**: Asegura márgenes laterales y centraliza el contenido.
+- **`row` y `col`**: Organizan elementos en filas y columnas para diseño responsivo.
+  
+### Botones y formularios:
+- **`btn` y `btn-primary`**: Botón estilizado en color azul.
+- **`form-control`**: Da estilo uniforme a los campos de texto.
+
+### Tablas:
+- **`table`**: Da formato a la tabla.
+- **`table-striped`**: Agrega un fondo alternado a las filas.
+- **`table-bordered`**: Agrega bordes a las celdas.
+
+### Alertas:
+- **`alert` y `alert-success`**: Para notificaciones de éxito.
+- **`alert-danger`**: Para notificaciones de error.
+
+---
+
+## Cómo ejecutar el proyecto
+1. Descarga o clona este repositorio.
+2. Coloca el archivo `index.html` en cualquier navegador web.
+3. Ingresa una URL de una API que devuelva un JSON y presiona el botón **Consultar**.
+4. Observa los resultados dinámicos en la sección de resultados.
+
+---
+
+## Notas importantes
+- Asegúrate de ingresar una URL válida que devuelva datos en formato JSON.
+- Este proyecto no incluye un servidor backend; todo el procesamiento ocurre en el navegador.
+- Puedes reemplazar el archivo `logo.png` por un logotipo propio.
